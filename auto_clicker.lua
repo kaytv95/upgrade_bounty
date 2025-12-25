@@ -2,8 +2,8 @@ local VIM = game:GetService("VirtualInputManager")
 local plr = game.Players.LocalPlayer
 local cam = workspace.CurrentCamera
 
-local minDelay = 0.5
-local maxDelay = 1
+local minDelay = 0.3
+local maxDelay = 0.6
 
 local char
 
@@ -55,3 +55,4 @@ task.spawn(function()
         end
     end
 end)
+
