@@ -9,7 +9,7 @@ local rng = Random.new()
 
 -- ====== TỌA ĐỘ CLICK (CHỈNH Ở ĐÂY) ======
 local CLICK_X_RATIO = 0.75
-local CLICK_Y_RATIO = 0.65
+local CLICK_Y_RATIO = 0.68
 -- =======================================
 
 task.spawn(function()
@@ -26,5 +26,6 @@ task.spawn(function()
         task.wait(delay)
     end
 end)
+
 
 
