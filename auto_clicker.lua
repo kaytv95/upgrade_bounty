@@ -5,6 +5,12 @@ local cam = workspace.CurrentCamera
 local minDelay = 0.3
 local maxDelay = 0.6
 
+-- ====== TỌA ĐỘ CLICK (CHỈNH Ở ĐÂY) ======
+-- nút "Bỏ qua" trong ảnh: bên phải, hơi giữa
+local CLICK_X_RATIO = 0.78
+local CLICK_Y_RATIO = 0.55
+-- =======================================
+
 local char
 
 local function loadChar(c)
@@ -46,8 +52,11 @@ task.spawn(function()
             local delay = math.random() * (maxDelay - minDelay) + minDelay
             local vp = cam.ViewportSize
 
-            VIM:SendMouseButtonEvent(vp.X/2, vp.Y/2, 0, true, game, 0)
-            VIM:SendMouseButtonEvent(vp.X/2, vp.Y/2, 0, false, game, 0)
+            local x = vp.X * CLICK_X_RATIO
+            local y = vp.Y * CLICK_Y_RATIO
+
+            VIM:SendMouseButtonEvent(x, y, 0, true, game, 0)
+            VIM:SendMouseButtonEvent(x, y, 0, false, game, 0)
 
             task.wait(delay)
         else
@@ -55,4 +64,3 @@ task.spawn(function()
         end
     end
 end)
-
