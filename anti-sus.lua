@@ -1,92 +1,83 @@
--- chong load trung
-if _G.CORE_LOADED then return end
-_G.CORE_LOADED = true
+-- anti load trung
+if _G.BANANA_HELPER_LOADED then return end
+_G.BANANA_HELPER_LOADED = true
 
 task.spawn(function()
 
-    repeat task.wait() until game:IsLoaded() and game.Players.LocalPlayer
-
+    repeat task.wait() until game:IsLoaded()
     local Players = game:GetService("Players")
     local RunService = game:GetService("RunService")
     local VIM = game:GetService("VirtualInputManager")
 
-    local player = Players.LocalPlayer
+    local lp = Players.LocalPlayer
+    repeat task.wait() until lp.Character and lp.Character:FindFirstChild("HumanoidRootPart")
 
-    repeat task.wait() until player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+    local hrp = lp.Character.HumanoidRootPart
 
-    local currentTarget = nil
-    local lowHpCount = 0
+    -- ================= CONFIG =================
+    local SKILLS = {"Z","X","C","V","F"}
+    local DASH_KEYS = {"W","A","S","D"}
 
-    -- fake lag
-    _G.ApplyFakeLag = function(min, max)
+    local ATTACK_RANGE = 30
+    local PREDICT_FACTOR_MIN = 0.12
+    local PREDICT_FACTOR_MAX = 0.18
+
+    local lastAction = 0
+
+    -- ================= FAKE LAG =================
+    local function FakeLag(min, max)
         task.wait(math.random(min, max) / 1000)
     end
 
-    -- random skill
-    _G.RandomSkill = function()
-        local skills = {"Z","X","C","V","F"}
-        local k = skills[math.random(#skills)]
+    -- ================= RANDOM SKILL =================
+    local function RandomSkill()
+        local k = SKILLS[math.random(#SKILLS)]
         VIM:SendKeyEvent(true, k, false, game)
-        _G.ApplyFakeLag(100,300)
+        FakeLag(120, 260)
         VIM:SendKeyEvent(false, k, false, game)
     end
 
-    -- get closest enemy
-    _G.GetClosestEnemy = function()
-        local best, dist = nil, math.huge
-        for _, v in pairs(Players:GetPlayers()) do
-            if v ~= player and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
-                local d = (v.Character.HumanoidRootPart.Position -
-                           player.Character.HumanoidRootPart.Position).Magnitude
-                if d < dist then
-                    dist = d
-                    best = v
-                end
-            end
-        end
-        return best
-    end
-
-    -- smart dash
-    _G.SmartDash = function()
-        local dirs = {"W","A","S","D"}
-        local d = dirs[math.random(#dirs)]
+    -- ================= SMART DASH =================
+    local function SmartDash()
+        local d = DASH_KEYS[math.random(#DASH_KEYS)]
         VIM:SendKeyEvent(true, d, false, game)
-        _G.ApplyFakeLag(50,150)
+        FakeLag(60, 150)
         VIM:SendKeyEvent(false, d, false, game)
     end
 
-    -- combat logic
-    _G.SmartCombat = function()
-        local t = _G.GetClosestEnemy()
-        if not t then return end
+    -- ================= PREDICTION NHE (KHONG TARGET) =================
+    local function GetNearestPredictedEnemy()
+        local bestDist = math.huge
+        local found = false
 
-        local dist = (player.Character.HumanoidRootPart.Position -
-                      t.Character.HumanoidRootPart.Position).Magnitude
-        if dist < 30 then
-            _G.SmartDash()
-            _G.RandomSkill()
-        end
-    end
+        for _,plr in pairs(Players:GetPlayers()) do
+            if plr ~= lp and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+                local thrp = plr.Character.HumanoidRootPart
+                local factor = math.random() * (PREDICT_FACTOR_MAX - PREDICT_FACTOR_MIN) + PREDICT_FACTOR_MIN
+                local predictPos = thrp.Position + thrp.Velocity * factor
+                local dist = (hrp.Position - predictPos).Magnitude
 
-    -- main loop
-    RunService.Heartbeat:Connect(function()
-        local char = player.Character
-        if not char or not char:FindFirstChild("Humanoid") then return end
-
-        local hum = char.Humanoid
-        if hum.Health < 5000 then
-            lowHpCount += 1
-            if lowHpCount >= 3 then
-                currentTarget = _G.GetClosestEnemy()
-                lowHpCount = 0
+                if dist < bestDist and dist < ATTACK_RANGE then
+                    bestDist = dist
+                    found = true
+                end
             end
         end
 
-        if currentTarget then
-            _G.SmartCombat()
-        else
-            currentTarget = _G.GetClosestEnemy()
+        return found
+    end
+
+    -- ================= MAIN LOOP =================
+    RunService.Heartbeat:Connect(function()
+        local now = tick()
+        if now - lastAction < 0.25 then return end -- tranh spam
+
+        if GetNearestPredictedEnemy() then
+            if math.random() < 0.6 then
+                SmartDash()
+            end
+            RandomSkill()
+            lastAction = now
         end
     end)
 
