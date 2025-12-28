@@ -26,6 +26,3 @@ task.spawn(function()
         task.wait(delay)
     end
 end)
-
-
-
