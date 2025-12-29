@@ -12,8 +12,8 @@ task.spawn(function()
     repeat task.wait() until player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 
     -- fake lag
-    _G.ApplyFakeLag = function(min, max)
-        task.wait(math.random(min, max) / 1000)
+    _G.ApplyFakeLag = function(50, 150)
+        task.wait(math.random(50, 150) / 1000)
     end
 
     -- smart dash
@@ -33,3 +33,4 @@ task.spawn(function()
         _G.SmartDash()
     end)
 end)
+
