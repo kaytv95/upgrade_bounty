@@ -1,13 +1,13 @@
 local VIM = game:GetService("VirtualInputManager")
 local cam = workspace.CurrentCamera
 
-local minDelay = 1.0
-local maxDelay = 1.5
+local minDelay = 0.5
+local maxDelay = 1.0
 
 -- random chuẩn
 local rng = Random.new()
 
--- ====== TỌA ĐỘ CLICK (CHỈNH Ở ĐÂY) ======
+-- ====== TỌA ĐỘ CLICK ======
 local CLICK_X_RATIO = 0.75
 local CLICK_Y_RATIO = 0.68
 -- =======================================
@@ -26,5 +26,6 @@ task.spawn(function()
         task.wait(delay)
     end
 end)
+
 
 
