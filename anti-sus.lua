@@ -29,5 +29,3 @@ task.spawn(function()
         _G.SmartDash()
     end)
 end)
-
-
