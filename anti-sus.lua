@@ -1,7 +1,3 @@
--- chống load trùng
-if _G.CORE_LOADED then return end
-_G.CORE_LOADED = true
-
 task.spawn(function()
     repeat task.wait() until game:IsLoaded() and game.Players.LocalPlayer
 
@@ -33,4 +29,5 @@ task.spawn(function()
         _G.SmartDash()
     end)
 end)
+
 
