@@ -14,7 +14,7 @@ task.spawn(function()
 
     -- smart dash
     _G.SmartDash = function()
-        local dirs = {"W","A","S","D"}
+        local dirs = {"W","A","S","D","Q"}
         local d = dirs[math.random(#dirs)]
         VIM:SendKeyEvent(true, d, false, game)
         _G.ApplyFakeLag(50,150)
@@ -29,3 +29,4 @@ task.spawn(function()
         _G.SmartDash()
     end)
 end)
+
