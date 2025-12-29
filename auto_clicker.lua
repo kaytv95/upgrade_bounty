@@ -1,8 +1,8 @@
 local VIM = game:GetService("VirtualInputManager")
 local cam = workspace.CurrentCamera
 
-local minDelay = 0.3
-local maxDelay = 0.6
+local minDelay = 0.8
+local maxDelay = 1.3
 
 -- random chuẩn
 local rng = Random.new()
@@ -26,3 +26,4 @@ task.spawn(function()
         task.wait(delay)
     end
 end)
+
