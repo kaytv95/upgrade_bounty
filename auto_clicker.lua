@@ -4,8 +4,8 @@ local cam = workspace.CurrentCamera
 local rng = Random.new()
 
 -- ====== RANGE RANDOM CHO MIN / MAX ======
-local MIN_DELAY_RANGE = {0.4, 0.6}
-local MAX_DELAY_RANGE = {0.8, 1.0}
+local MIN_DELAY_RANGE = {0.2, 0.35}
+local MAX_DELAY_RANGE = {0.36, 0.6}
 
 -- ====== TỌA ĐỘ CLICK ======
 local CLICK_X_RATIO = 0.75
@@ -36,3 +36,4 @@ task.spawn(function()
         task.wait(delay)
     end
 end)
+
