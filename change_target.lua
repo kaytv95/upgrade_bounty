@@ -22,6 +22,7 @@ local enemyCount = 0
 local selfCount = 0
 local enemyWasLow = false
 local selfWasLow = false
+local lastTarget = nil
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -56,10 +57,18 @@ task.spawn(function()
             selfCount = 0
             enemyWasLow = false
             selfWasLow = false
+            lastTarget = nil
             continue
         end
 
         local target = getBananaTarget()
+
+        -- ===== BAT SU KIEN BANANA TU DOI TARGET =====
+        if target ~= lastTarget then
+            enemyCount = 0
+            enemyWasLow = false
+            lastTarget = target
+        end
 
         -- ================= ENEMY LOW HP =================
         if getgenv().NK_LowHP.Enemy.Enable and target then
@@ -80,6 +89,7 @@ task.spawn(function()
                 enemyWasLow = false
                 selfCount = 0
                 selfWasLow = false
+                lastTarget = nil
             end
         end
 
@@ -102,6 +112,7 @@ task.spawn(function()
                 selfCount = 0
                 enemyWasLow = false
                 selfWasLow = false
+                lastTarget = nil
             end
         end
     end
