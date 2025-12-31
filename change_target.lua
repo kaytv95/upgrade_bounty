@@ -1,21 +1,39 @@
--- ================= LOW HP COUNT (NON RESET, STACK WITH BANANA) =================
+-- ================= LOW HP COUNT (ENEMY + SELF, STACK WITH BANANA) =================
 
 getgenv().NK_LowHP = {
     Enable = true,
-    LowHealth = 5000,
-    MaxCount = 3,
+
+    Enemy = {
+        Enable = true,
+        LowHealth = 4500,
+        MaxCount = 3,
+    },
+
+    Self = {
+        Enable = true,
+        LowHealth = 4500,
+        MaxCount = 3,
+    },
+
     Delay = 0.4
 }
 
-local count = 0
-local wasLow = false
+local enemyCount = 0
+local selfCount = 0
+local enemyWasLow = false
+local selfWasLow = false
 
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- lay target cua Banana
 local function getBananaTarget()
     return _G.Target
         or getgenv().Target
         or getgenv().SelectedTarget
 end
 
+-- clear target de Banana doi nguoi
 local function clearBananaTarget()
     if _G.Target then _G.Target = nil end
     if getgenv().Target then getgenv().Target = nil end
@@ -34,33 +52,57 @@ end
 task.spawn(function()
     while task.wait(getgenv().NK_LowHP.Delay) do
         if not getgenv().NK_LowHP.Enable then
-            count = 0
-            wasLow = false
+            enemyCount = 0
+            selfCount = 0
+            enemyWasLow = false
+            selfWasLow = false
             continue
         end
 
         local target = getBananaTarget()
-        if not target then
-            count = 0
-            wasLow = false
-            continue
-        end
 
-        local hp = getHP(target)
+        -- ================= ENEMY LOW HP =================
+        if getgenv().NK_LowHP.Enemy.Enable and target then
+            local enemyHP = getHP(target)
 
-        if hp <= getgenv().NK_LowHP.LowHealth then
-            if not wasLow then
-                count += 1
-                wasLow = true
+            if enemyHP <= getgenv().NK_LowHP.Enemy.LowHealth then
+                if not enemyWasLow then
+                    enemyCount += 1
+                    enemyWasLow = true
+                end
+            else
+                enemyWasLow = false
             end
-        else
-            wasLow = false
+
+            if enemyCount >= getgenv().NK_LowHP.Enemy.MaxCount then
+                clearBananaTarget()
+                enemyCount = 0
+                enemyWasLow = false
+                selfCount = 0
+                selfWasLow = false
+            end
         end
 
-        if count >= getgenv().NK_LowHP.MaxCount then
-            clearBananaTarget()
-            count = 0
-            wasLow = false
+        -- ================= SELF LOW HP =================
+        if getgenv().NK_LowHP.Self.Enable then
+            local selfHP = getHP(LocalPlayer)
+
+            if selfHP <= getgenv().NK_LowHP.Self.LowHealth then
+                if not selfWasLow then
+                    selfCount += 1
+                    selfWasLow = true
+                end
+            else
+                selfWasLow = false
+            end
+
+            if selfCount >= getgenv().NK_LowHP.Self.MaxCount then
+                clearBananaTarget()
+                enemyCount = 0
+                selfCount = 0
+                enemyWasLow = false
+                selfWasLow = false
+            end
         end
     end
 end)
