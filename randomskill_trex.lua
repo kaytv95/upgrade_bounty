@@ -1,5 +1,5 @@
 -- ================= RANDOM SKILL STANDALONE (ANTI SUS) =================
--- Random skill: Z X C F (bo V)
+-- Random skill: Z X C
 -- Co fake lag
 
 getgenv().RandomSkillConfig = {
@@ -17,7 +17,7 @@ getgenv().RandomSkillConfig = {
 
 local VIM = game:GetService("VirtualInputManager")
 
-local skills = { "Z", "X", "C", "F" }
+local skills = { "Z", "X", "C"}
 
 math.randomseed(os.clock() * 1000000)
 
@@ -67,3 +67,4 @@ task.spawn(function()
         task.wait(delay)
     end
 end)
+
