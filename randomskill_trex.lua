@@ -17,7 +17,7 @@ getgenv().RandomSkillConfig = {
 
 local VIM = game:GetService("VirtualInputManager")
 
-local skills = { "Z", "X", "C"}
+local skills = { "Z", "X", "C" }
 
 math.randomseed(os.clock() * 1000000)
 
@@ -67,4 +67,5 @@ task.spawn(function()
         task.wait(delay)
     end
 end)
+
 
