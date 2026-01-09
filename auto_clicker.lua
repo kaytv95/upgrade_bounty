@@ -5,7 +5,7 @@ local rng = Random.new()
 
 -- ====== RANGE RANDOM CHO MIN / MAX ======
 local MIN_DELAY_RANGE = {0.4, 0.5}
-local MAX_DELAY_RANGE = {0.5, 0.6}
+local MAX_DELAY_RANGE = {0.55, 0.65}
 
 -- ====== TỌA ĐỘ CLICK ======
 local CLICK_X_RATIO = 0.75
@@ -36,5 +36,6 @@ task.spawn(function()
         task.wait(delay)
     end
 end)
+
 
 
