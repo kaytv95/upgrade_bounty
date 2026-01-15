@@ -1,39 +1,56 @@
 task.spawn(function()
-    -- Chờ game và Player load xong
-    repeat task.wait() until game:IsLoaded() and game.Players.LocalPlayer
+    repeat task.wait() until game:IsLoaded()
     local Players = game:GetService("Players")
     local player = Players.LocalPlayer
 
     repeat task.wait() until player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 
-    -- ======================
-    -- 1️⃣ Fake Lag
-    -- ======================
-    _G.ApplyFakeLag = function(min, max)
-        min = min or 50      -- giá trị mặc định nếu không truyền
-        max = max or 150
-        task.wait(math.random(min, max)/1000)
+    -- =====================
+    -- ⚙️ SETTINGS
+    -- =====================
+    local MIN_LAG = 30    -- ms
+    local MAX_LAG = 120   -- ms
+
+    local HITBOX_MIN = 9
+    local HITBOX_MAX = 11
+
+    -- =====================
+    -- 🐌 FAKE LAG FUNCTION
+    -- =====================
+    local function ApplyFakeLag()
+        task.wait(math.random(MIN_LAG, MAX_LAG) / 1000)
     end
 
-    -- ======================
-    -- 2️⃣ Tăng Hitbox cho tất cả người chơi khác
-    -- ======================
+    -- =====================
+    -- 📦 HITBOX + AUTO FAKE LAG
+    -- =====================
     task.spawn(function()
-        while task.wait(1) do
-            for _, v in pairs(Players:GetPlayers()) do
-                if v ~= player and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
+        while task.wait(0.8) do
+            local foundPlayer = false
+
+            for _, v in ipairs(Players:GetPlayers()) do
+                if v ~= player
+                    and v.Character
+                    and v.Character:FindFirstChild("HumanoidRootPart")
+                then
+                    foundPlayer = true
+
                     pcall(function()
                         local hrp = v.Character.HumanoidRootPart
-                        -- Tăng hitbox random
-                        local sizeX = math.random(9,11)
-                        local sizeY = math.random(9,11)
-                        local sizeZ = math.random(9,11)
-                        hrp.Size = Vector3.new(sizeX,sizeY,sizeZ)
-                        hrp.Transparency = 0.65 + math.random()*0.1
+                        local size = math.random(HITBOX_MIN, HITBOX_MAX)
+
+                        hrp.Size = Vector3.new(size, size, size)
+                        hrp.Transparency = 0.65 + math.random() * 0.1
                         hrp.Material = Enum.Material.ForceField
                         hrp.CanCollide = false
                     end)
                 end
+            end
+
+            -- 👉 Chỉ fake lag khi có player khác
+            if foundPlayer then
+                ApplyFakeLag()
+                task.wait(math.random(0.05, 0.25)) -- nghỉ nhẹ cho tự nhiên
             end
         end
     end)
